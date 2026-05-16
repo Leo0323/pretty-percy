@@ -31,7 +31,7 @@ function loadFeed(append) {
 
     const url = feedMode === 'latest'
         ? 'https://robbie-3fob.onrender.com/robert/getFileByTime'
-        : 'https://robbie-3fob.onrender.com/getFileByLike';
+        : 'https://robbie-3fob.onrender.com/robert/getFileByLike';
 
     axios.get(url, {
         params,
