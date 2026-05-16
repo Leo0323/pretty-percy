@@ -1,0 +1,292 @@
+/* 保持 HTML 名称不变：#feedFilter, #latestBtn, #hotBtn, #indicator */
+
+/* 容器定位（指示条使用 absolute 定位，offsetLeft 相对于该容器） */
+#feedFilter {
+  position: relative;           /* 必须：indicator 的 offsetLeft 与容器对齐 */
+  display: inline-flex;         /* 横向排列按钮 */
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  background: transparent;
+  user-select: none;
+  /* 可根据主题调整下边距以容纳 indicator */
+  padding-bottom: 12px;
+  box-sizing: border-box;
+}
+
+/* 按钮基样式（保留 id 名称，不改变） */
+#feedFilter button {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #f2f2f2;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  position: relative;
+}
+
+/* hover/focus 效果 */
+#feedFilter button:hover,
+#feedFilter button:focus {
+  background: #e9e9e9;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+/* active 按钮（JS 会添加/移除 .active） */
+#feedFilter button.active {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  color: #111;
+  border-color: rgba(0,0,0,0.12);
+}
+
+/* 指示条：宽度/位置由 JS 控制（indicator.style.width / transform） */
+#indicator {
+  position: absolute;
+  height: 6px;                       /* 指示条高度（可调） */
+  bottom: 4px;                       /* 距容器底部，确保在按钮下方可见 */
+  left: 0;
+  width: 0;                          /* 初始宽度，JS 会写入 active.offsetWidth */
+  background: linear-gradient(90deg,#ff8a00,#e03b7b); /* 渐变色，可按需改 */
+  border-radius: 4px;
+  transform: translateX(0);
+  transition: width 0.22s cubic-bezier(.2,.8,.2,1), transform 0.28s cubic-bezier(.2,.8,.2,1);
+  pointer-events: none;              /* 不阻塞点击 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* 小屏时按钮间距与指示条高度调整 */
+@media (max-width: 520px) {
+  #feedFilter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 18px;
+  }
+  #indicator { height: 5px; bottom: 6px; }
+  #feedFilter button { flex: 1 0 auto; min-width: 90px; text-align: center; }
+}
+
+/* 把 pagination 定位到 feed 区域的右上角（不修改 HTML） */
+#feed {
+	margin-left: 100px;
+  position: relative; /* 必须：作为 .pagination 的定位上下文 */
+}
+
+/* 绝对定位到父容器 #feed 的右上角 */
+.pagination {
+  position: absolute;
+  top: 60px;            /* 距离 feed 顶部，可按需微调 */
+  right: 20px;          /* 距离 feed 右侧，可按需微调 */
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  background: transparent;
+  z-index: 50;          /* 确保在内容之上 */
+}
+
+/* 分页按钮外观（与之前保持一致） */
+.pagination button {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #f2f2f2;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  position: relative;
+}
+
+/* hover / focus 效果 */
+.pagination button:hover,
+.pagination button:focus {
+  background: #e9e9e9;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+/* 页码文本样式（保持 id 名称 #feedPageText 不变） */
+#feedPageText {
+  min-width: 80px;
+  text-align: center;
+  color: #333;
+  font-size: 13px;
+  display: inline-block;
+}
+
+/* 窄屏回退：取消绝对定位，改为流内并居中显示 */
+@media (max-width: 720px) {
+  .pagination {
+          /* 恢复文档流，避免遮挡或重叠 */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 8px;
+    padding: 8px 6px;
+  }
+  .pagination button { min-width: 80px; flex: 0 1 auto; }
+  #feedPageText { min-width: 60px; font-size: 13px; }
+}
+
+/* 翻页按钮 */
+#feed .pagination {
+    position: relative;
+    top: 50%;
+    left: 0;
+    width: 100vw;
+    transform: translateY(-50%);
+    pointer-events: none; /* 防止挡住中间内容 */
+    z-index: 100;
+}
+#feed .page-btn {
+    pointer-events: auto; /* 恢复点击 */
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.25s ease;
+}
+#feed .page-btn.prev {
+    position: fixed;
+        left: -48px;
+        top: -364px;
+}
+
+#feed .page-btn.next {
+    position: fixed;
+    right: 132px;
+	top: -364px;
+}
+#feed .page-btn:hover {
+    background: rgba(245, 72, 74, 0.85);
+    transform: scale(1.15);
+}
+
+#feed .page-btn:active {
+    transform: scale(1.05);
+}
+
+/* 白色圆环 */
+
+.dot-wrap {
+  position: absolute;
+  right: 102px;
+  top: 150px;
+  z-index: 3;
+}
+
+.dot-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  position: relative; /* 只用于给 ::after 定位 */
+  padding: 0;
+  outline: none;
+  top: -50px;
+  box-shadow: 0 0 6px rgba(255,255,255,.6);
+  transition: box-shadow .3s ease, transform .15s ease;
+}
+
+
+/* 悬停：轻微呼吸感 */
+.dot-btn:hover {
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.9),
+    0 0 18px rgba(255, 255, 255, 0.4);
+}
+
+/* 点击缩放 */
+.dot-btn:active {
+  transform: scale(0.9);
+}
+
+/* 点击发光波纹 */
+.dot-btn::after {
+  content: "";
+  position: absolute;   /* ✅ 必须是 absolute */
+
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(255,255,255,.8);
+}
+
+
+/* 点击触发动画 */
+.dot-btn:active::after {
+  animation: glow-pulse 0.3s ease-out;
+}
+
+/* 波纹动画 */
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 20px 14px rgba(255, 255, 255, 0);
+  }
+}
+
+/* 唱片按钮 */
+.cd-secondary-nav {
+  position: relative;
+}
+/* 
+外层：只负责定位 */
+.disc-icon {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+/* 内层：只负责旋转
+/* .disc-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+} */
+
+/* 真正旋转的是 img */
+/* .disc-icon.rotating .disc-img {
+  animation: disc-spin 4s linear infinite;
+} */
+
+@keyframes disc-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

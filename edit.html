@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编辑帖子</title>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #181818;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e8e8;
+  --muted: rgba(255,255,255,0.38);
+  --accent: #c8a96e;
+  --accent-dim: rgba(200,169,110,0.12);
+  --red: #e05b5b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+  animation: fadeUp 0.45s ease both;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 44px;
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.back-btn:hover { color: var(--text); }
+
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+/* 当前文件预览 */
+.file-preview-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  animation: fadeUp 0.45s 0.08s ease both;
+}
+
+.file-preview-media {
+  height: 240px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.file-preview-media img,
+.file-preview-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.file-preview-placeholder {
+  font-size: 48px;
+  opacity: 0.2;
+}
+
+.file-preview-info {
+  padding: 14px 18px;
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-type-badge {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 0.5px solid rgba(200,169,110,0.2);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.file-id {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* 表单卡片 */
+.form-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeUp 0.45s 0.14s ease both;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-input {
+  height: 44px;
+  padding: 0 16px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.form-input:focus { border-color: var(--accent); background: rgba(200,169,110,0.04); }
+
+.form-textarea {
+  padding: 14px 16px;
+  min-height: 110px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s, background 0.2s;
+  line-height: 1.6;
+}
+.form-textarea:focus { border-color: var(--accent); background: rgba(200,169,110,0.04); }
+
+.char-count {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+  margin-top: -4px;
+}
+
+.divider {
+  height: 0.5px;
+  background: var(--border);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.btn-save {
+  background: var(--accent);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 28px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-save:hover { opacity: 0.88; }
+.btn-save:active { transform: scale(0.97); }
+.btn-save:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 0.5px solid var(--border2);
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-cancel:hover { color: var(--text); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  color: var(--text);
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { color: #4caf7d; border-color: rgba(76,175,125,0.3); }
+.toast.error { color: var(--red); border-color: rgba(224,91,91,0.3); }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <button class="back-btn" onclick="history.back()">← 返回</button>
+
+  <div class="page-title">编辑帖子</div>
+  <div class="page-sub" id="pageSub">修改标题和描述</div>
+
+  <!-- 文件预览 -->
+  <div class="file-preview-card">
+    <div class="file-preview-media" id="previewMedia">
+      <div class="file-preview-placeholder">◻</div>
+    </div>
+    <div class="file-preview-info">
+      <span class="file-type-badge" id="fileTypeBadge">—</span>
+      <span class="file-id" id="fileIdLabel"></span>
+    </div>
+  </div>
+
+  <!-- 表单 -->
+  <div class="form-card">
+    <div class="form-group">
+      <label class="form-label">标题</label>
+      <input class="form-input" id="fileName" type="text" placeholder="帖子标题…"
+             oninput="updateCharCount()">
+      <div class="char-count" id="charCount">0 / 100</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label class="form-label">描述</label>
+      <textarea class="form-textarea" id="describtion" placeholder="写点描述…"></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="history.back()">取消</button>
+      <button class="btn-save" id="saveBtn" onclick="saveEdit()">保存修改</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+	import axios from 'axios';
+	axios.defaults.baseURL = 'https://518548c4.r33.cpolar.top';
+const loggedUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+if (!loggedUser || !loggedUser.token) { alert("请先登录"); location.href = "login.html"; }
+const token = loggedUser.token;
+const BASE = "https://robbie-3fob.onrender.com/robert";
+
+// 从 URL 参数或 localStorage 取文件ID
+const fileId = new URLSearchParams(location.search).get("id");
+let currentFile = null;
+
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show" + (type ? " " + type : "");
+  setTimeout(() => t.className = "toast", 2500);
+}
+
+function updateCharCount() {
+  const v = document.getElementById("fileName").value;
+  document.getElementById("charCount").textContent = `${v.length} / 100`;
+}
+
+/* 加载文件信息 */
+function loadFile() {
+  // 优先从 localStorage 读（从详情页跳过来时已存好）
+  const stored = localStorage.getItem("editFile");
+  if (stored) {
+    currentFile = JSON.parse(stored);
+    fillForm(currentFile);
+    return;
+  }
+  // 否则用 URL 参数请求接口
+  if (!fileId) { showToast("缺少文件ID", "error"); return; }
+  axios.get(`${BASE}/OssById/${fileId}`, { headers: { Authorization: token } })
+  .then(res => {
+    currentFile = res.data;
+    fillForm(currentFile);
+  }).catch(() => showToast("加载文件信息失败", "error"));
+}
+
+function fillForm(f) {
+  document.getElementById("fileName").value = f.fileName || "";
+  document.getElementById("describtion").value = f.describtion || "";
+  document.getElementById("fileTypeBadge").textContent = f.fileType || "file";
+  document.getElementById("fileIdLabel").textContent = `ID: ${f.id}`;
+  document.getElementById("pageSub").textContent = `修改《${f.fileName}》的标题和描述`;
+  updateCharCount();
+  loadPreview(f);
+}
+
+function loadPreview(f) {
+  const media = document.getElementById("previewMedia");
+  if (f.ossUrl) {
+    if (f.fileType === "video") {
+      const v = document.createElement("video");
+      v.src = f.ossUrl;
+      v.controls = true;
+      media.innerHTML = "";
+      media.appendChild(v);
+    } else if (f.fileType === "image") {
+      const img = new Image();
+      img.src = f.ossUrl;
+      media.innerHTML = "";
+      media.appendChild(img);
+    }
+  } else if (f.fileType === "image" || f.fileType === "video") {
+    axios.get(`${BASE}/file/preview/${f.id}`, { responseType: "blob", headers: { Authorization: token } })
+    .then(r => {
+      const url = URL.createObjectURL(r.data);
+      if (f.fileType === "image") {
+        const img = new Image(); img.src = url;
+        media.innerHTML = ""; media.appendChild(img);
+      } else {
+        const v = document.createElement("video"); v.src = url; v.controls = true;
+        media.innerHTML = ""; media.appendChild(v);
+      }
+    });
+  } else {
+    media.innerHTML = `<div class="file-preview-placeholder">📄</div>`;
+  }
+}
+
+/* 保存 */
+async function saveEdit() {
+  const fileName = document.getElementById("fileName").value.trim();
+  const describtion = document.getElementById("describtion").value.trim();
+
+  if (!fileName) { showToast("标题不能为空", "error"); return; }
+  if (!currentFile) { showToast("文件信息未加载", "error"); return; }
+
+  const btn = document.getElementById("saveBtn");
+  btn.disabled = true;
+  btn.textContent = "保存中…";
+
+  try {
+    await axios.put(
+      `${BASE}/updateFile/${currentFile.id}`,
+      { fileName, describtion },
+      { headers: { Authorization: token, "Content-Type": "application/json" } }
+    );
+    showToast("保存成功 ✓", "success");
+    // 更新 localStorage 缓存
+    localStorage.removeItem("editFile");
+    setTimeout(() => history.back(), 1200);
+  } catch(e) {
+    showToast("保存失败，请重试", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "保存修改";
+  }
+}
+
+loadFile();
+</script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-image: url("../img/no.163c.png");
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+			background-size: cover;
+        }
+
+        /* 背景动画装饰球 */
+        .gradient-blob {
+            position: fixed;
+            opacity: 0.1;
+            filter: blur(40px);
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            z-index: -1;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .blob1 {
+            width: 400px;
+            height: 400px;
+            background: #667eea;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .blob2 {
+            width: 300px;
+            height: 300px;
+            background: #764ba2;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(30px, -30px);
+            }
+        }
+
+        /* 主容器 */
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        /* 卡片 */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            /* border-radius: 20px; */
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 装饰背景渐变 */
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: white;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                background-position: 0%;
+            }
+            50% {
+                background-position: 100%;
+            }
+        }
+
+        /* 标题 */
+        .auth-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: #a0aec0;
+            text-align: center;
+            margin-bottom: 35px;
+            animation: fadeIn 0.8s ease-out 0.3s backwards;
+        }
+
+        /* 表单容器 */
+        .form-container {
+            display: none;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 输入框组 */
+        .input-group {
+            margin-bottom: 18px;
+            animation: slideInLeft 0.6s ease-out backwards;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .input-group:nth-child(2) { animation-delay: 0.1s; }
+        .input-group:nth-child(3) { animation-delay: 0.2s; }
+        .input-group:nth-child(4) { animation-delay: 0.3s; }
+        .input-group:nth-child(5) { animation-delay: 0.4s; }
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: whitesmoke;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 45px;
+            padding: 0 15px;
+            font-size: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            font-family: inherit;
+            color: #2d3748;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-field::placeholder {
+            color: #cbd5e0;
+        }
+
+        /* 性别选择 */
+        .sex-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .sex-option {
+            flex: 1;
+        }
+
+        .sex-input {
+            display: none;
+        }
+
+        .sex-label {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .sex-input:checked + .sex-label {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 按钮 */
+        .auth-button {
+            width: 100%;
+            height: 48px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 0.6s ease-out 0.5s backwards;
+        }
+
+        .auth-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .auth-button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, #fdc0d0 0%, #e4e4e4 100%);
+            box-shadow: 0 8px 20px rgba(78, 48, 68, 0.3);
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .signup-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 5px 10px rgba(245, 87, 108, 0.3);
+        }
+
+        .signup-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .auth-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* GitHub 登录按钮 */
+        .github-button {
+            width: 100%;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(45, 55, 72, 0.9);
+            color: white;
+            border: 2px solid rgba(45, 55, 72, 0.3);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.6s ease-out 0.6s backwards;
+        }
+
+        .github-button:hover {
+            background: #2d3748;
+            border-color: #4a5568;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(45, 55, 72, 0.3);
+        }
+
+        /* 分割线 */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            animation: fadeIn 0.6s ease-out 0.4s backwards;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e0, transparent);
+        }
+
+        .divider-text {
+            padding: 0 12px;
+            font-size: 12px;
+            color: #a0aec0;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* 切换链接 */
+        .auth-toggle {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            
+        }
+
+        .auth-toggle a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-toggle a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .auth-toggle a:hover::after {
+            width: 100%;
+        }
+
+        /* 错误提示 */
+        .error-message {
+            display: none;
+            padding: 12px 15px;
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.3);
+            border-radius: 8px;
+            color: #c53030;
+            font-size: 13px;
+            margin-bottom: 18px;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* 成功提示 */
+        .success-message {
+            display: none;
+            padding: 12px 15px;
+            background: rgba(142, 204, 142, 0.8);
+            border: 1px solid rgba(72, 187, 120, 0.9);
+            border-radius: 8px;
+            color: #22543d;
+            font-size: 13px;
+            margin-bottom: 18px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 加载状态 */
+        .auth-button.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 35px 25px;
+            }
+
+            .auth-title {
+                font-size: 26px;
+            }
+
+            .input-field {
+                height: 42px;
+                font-size: 13px;
+            }
+
+            .auth-button,
+            .github-button {
+                height: 44px;
+                font-size: 15px;
+            }
+        }

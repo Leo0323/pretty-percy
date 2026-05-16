@@ -1,0 +1,197 @@
+/* 容器：3 列，每列 420px，高度 300px，gap 50px */
+#fileGrid, .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 420px); /* 三列固定宽度 */
+  grid-auto-rows: 300px;                   /* 每行高度 300px */
+  gap: 70px;                               /* 间隙 50px */
+  padding: 20px;
+  justify-content: center; /* 如果屏幕更宽，居中整个网格 */
+  box-sizing: border-box;
+}
+/* 卡片：刚好占满格子，允许子元素脱出（用于把点赞放到 gap 里） */
+.feed-card {
+  width: 420px;        /* 固定宽度 */
+  height: 300px;       /* 固定高度 */
+  max-width: 420px;
+  box-sizing: border-box;
+  background-color: ghostwhite;
+  border-radius: 8px;
+  position: relative;
+  overflow: visible;   /* 注意：改为 visible，让点赞区能显示在 gap 中 */
+  display: flex;
+  flex-direction: column;
+}
+/* 媒体区域占满卡片并裁剪溢出 */
+.img-box {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+.img-box img,
+.img-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.img-box:hover img,
+.img-box:hover video {
+  transform: scale(1.1);
+}
+/* 半透明��盖层 */
+.transparent-box {
+  position: absolute;
+  top: 0; left: 0;
+  
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0);
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;            /* 垂直居中 */
+     justify-content: center;        /* 水平居中 */
+  padding: 10px;
+  box-sizing: border-box;
+}
+.img-box:hover .transparent-box {
+  background-color: rgba(0,0,0,0.5);
+}
+/* 标题和描述悬浮显示 */
+.caption {
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  color: white;
+  font-size: 20px;
+}
+
+.img-box:hover .caption {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.caption > p:nth-child(2) {
+  font-size: 15px;
+  opacity: 0.7;
+}
+.caption p:first-child {
+    font-size: 20px;                /* 文件名更大 */
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* 点赞区：定位到卡片正下方的间隙位置并水平居中 */
+.feed-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: absolute;
+  bottom: -25px;           /* gap / 2 = 50 / 2 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: transparent; /* 如需可加背景/阴影 */
+  pointer-events: auto;
+}
+
+/* 点赞图标大小 */
+/* .feed-meta img {
+	position: absolute;
+	    top: -25px;
+	    width: 90px;
+	    left: -40px;
+
+} */
+/* 点赞图标动画 */
+.feed-meta img {
+    width: 90px;
+    position: absolute;
+    top: -25px;
+    left: -40px;
+    transition: 
+        transform 0.25s ease,
+        filter 0.25s ease,
+        opacity 0.25s ease;
+    cursor: pointer;
+}
+
+/* hover 动画（未点赞） */
+.feed-meta img:hover {
+    transform: scale(1.15);
+    filter: brightness(5.0)
+			drop-shadow(1px 1px 0.5px rgba(255, 255, 255, 0.5))
+			drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.5))
+		 	drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.5))
+			/* drop-shadow(1px 2px 2px rgba(255, 255, 255, 0.5)) */
+}
+
+/* 已点赞状态 */
+.feed-meta img.liked {
+    transform: scale(1.10);
+    filter:
+        brightness(1.3)
+       /* drop-shadow(0 0 6px pink) */
+        drop-shadow(2px 2px 0 rgba(197, 165, 47, 0.5))
+        drop-shadow(0 0 3px rgba(255, 255, 216, 0.8));
+}
+
+.feed-meta img.liked:hover {
+    transform: scale(1.15);
+	
+    filter:
+	/* blur(1.0px) */
+        brightness(1.3)
+        drop-shadow(2px 2px 2px rgba(255, 255, 127, 0.5))
+  /*      drop-shadow(0 0 28px rgba(255, 80, 120, 0.8))
+        drop-shadow(0 0 42px rgba(255, 80, 120, 0.6)); */
+}
+
+
+
+/* 空提示 */
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 50px;
+  font-size: 1.2em;
+}
+
+/* 编辑按钮（仍在卡片内部）*/
+.feed-card button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ff8800;
+  color: #fff;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.feed-card button:hover {
+  background-color: #ffaa33;
+}
+.search-bar {
+	position:absolute;
+    display: flex;
+    gap: 10px;
+	right: 20px;
+    margin: 15px 0;
+}
+
+.search-bar input,
+.search-bar select {
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+.search-bar button {
+    padding: 6px 16px;
+    cursor: pointer;
+}
+.cd-header,
+.cd-main-content {
+  position: relative;
+  z-index: 2;
+}

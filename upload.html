@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发布帖子</title>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #181818;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e8e8;
+  --muted: rgba(255,255,255,0.38);
+  --accent: #c8a96e;
+  --accent-dim: rgba(200,169,110,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  margin-bottom: 40px;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.back-btn:hover { color: var(--text); }
+
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+/* 上传区 */
+.upload-zone {
+  border: 1px dashed var(--border2);
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 28px;
+  position: relative;
+  background: var(--surface);
+}
+.upload-zone:hover { border-color: var(--accent); background: var(--surface2); }
+.upload-zone.drag-over { border-color: var(--accent); background: rgba(200,169,110,0.05); }
+.upload-zone.has-file { border-style: solid; border-color: rgba(200,169,110,0.4); }
+
+#fileInput { display: none; }
+
+.upload-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.upload-label {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.upload-accent { color: var(--accent); font-weight: 500; cursor: pointer; }
+
+/* 预览 */
+.preview-wrap {
+  display: none;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  max-height: 360px;
+  background: var(--surface);
+}
+.preview-wrap img, .preview-wrap video {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  display: block;
+}
+.preview-remove {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.preview-remove:hover { background: rgba(224,91,91,0.8); }
+
+.preview-name {
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface2);
+  border-top: 0.5px solid var(--border);
+}
+
+/* 表单 */
+.form-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+
+.form-label {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-input {
+  height: 44px;
+  padding: 0 16px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--accent); }
+
+.form-textarea {
+  padding: 14px 16px;
+  height: 100px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s;
+  line-height: 1.6;
+}
+.form-textarea:focus { border-color: var(--accent); }
+
+/* 底部按钮 */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 0.5px solid var(--border);
+}
+
+.btn-submit {
+  background: var(--accent);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 32px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-submit:hover { opacity: 0.88; }
+.btn-submit:active { transform: scale(0.97); }
+.btn-submit:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.btn-reset {
+  background: transparent;
+  color: var(--muted);
+  border: 0.5px solid var(--border2);
+  border-radius: 999px;
+  padding: 11px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-reset:hover { color: var(--text); }
+
+/* 进度条 */
+.progress-wrap {
+  display: none;
+  height: 3px;
+  background: var(--surface2);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  color: var(--text);
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: rgba(76,175,125,0.4); color: #4caf7d; }
+.toast.error { border-color: rgba(224,91,91,0.4); color: #e05b5b; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <button class="back-btn" onclick="history.back()">← 返回</button>
+
+  <div class="page-title">发布帖子</div>
+  <div class="page-sub">分享你的图片、视频或文字内容</div>
+
+  <!-- 上传区 -->
+  <div class="upload-zone" id="uploadZone"
+       onclick="document.getElementById('fileInput').click()"
+       ondragover="handleDrag(event)"
+       ondragleave="handleDragLeave(event)"
+       ondrop="handleDrop(event)">
+    <input type="file" id="fileInput" accept="image/*,video/*" onchange="handleFileSelect(this)">
+    <div class="upload-icon">⬆</div>
+    <div class="upload-label">拖拽文件到此，或 <span class="upload-accent">点击选择</span></div>
+    <div class="upload-hint">支持 JPG · PNG · GIF · MP4 · MOV，最大 50MB</div>
+  </div>
+
+  <!-- 预览 -->
+  <div class="preview-wrap" id="previewWrap">
+    <div id="previewContent"></div>
+    <div class="preview-name" id="previewName"></div>
+    <button class="preview-remove" onclick="removeFile()" title="移除文件">✕</button>
+  </div>
+
+  <!-- 表单 -->
+  <div class="form-card">
+    <div class="form-group">
+      <label class="form-label">标题</label>
+      <input class="form-input" id="fileName" type="text" placeholder="给帖子起个标题…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">描述</label>
+      <textarea class="form-textarea" id="describtion" placeholder="写点描述，让大家更了解这个帖子…"></textarea>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-reset" onclick="resetForm()">清空</button>
+      <button class="btn-submit" id="submitBtn" onclick="submitPost()">发布</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const loggedUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+if (!loggedUser || !loggedUser.token) { alert("请先登录"); location.href = "login.html"; }
+const token = loggedUser.token;
+
+let selectedFile = null;
+
+/* Toast */
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show" + (type ? " " + type : "");
+  setTimeout(() => t.className = "toast", 2500);
+}
+
+/* 文件选择 */
+function handleFileSelect(input) {
+  if (input.files[0]) setFile(input.files[0]);
+}
+
+function handleDrag(e) {
+  e.preventDefault();
+  document.getElementById("uploadZone").classList.add("drag-over");
+}
+
+function handleDragLeave(e) {
+  document.getElementById("uploadZone").classList.remove("drag-over");
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById("uploadZone").classList.remove("drag-over");
+  if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+}
+
+function setFile(file) {
+  selectedFile = file;
+  const zone = document.getElementById("uploadZone");
+  const wrap = document.getElementById("previewWrap");
+  const content = document.getElementById("previewContent");
+  const nameEl = document.getElementById("previewName");
+
+  zone.style.display = "none";
+  wrap.style.display = "block";
+  content.innerHTML = "";
+  nameEl.textContent = `${file.name}  ·  ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+
+  // 自动填充标题
+  const url = URL.createObjectURL(file);
+  if (file.type.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.src = url;
+    content.appendChild(img);
+  } else if (file.type.startsWith("video/")) {
+    const video = document.createElement("video");
+    video.src = url;
+    video.controls = true;
+    content.appendChild(video);
+  }
+}
+
+function removeFile() {
+  selectedFile = null;
+  document.getElementById("uploadZone").style.display = "";
+  document.getElementById("previewWrap").style.display = "none";
+  document.getElementById("fileInput").value = "";
+}
+
+function resetForm() {
+  removeFile();
+  document.getElementById("fileName").value = "";
+  document.getElementById("describtion").value = "";
+}
+
+/* 发布 */
+async function submitPost() {
+  const fileName = document.getElementById("fileName").value.trim();
+  const describtion = document.getElementById("describtion").value.trim();
+
+  if (!fileName) { showToast("请填写标题", "error"); return; }
+
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "发布中…";
+
+  const progressWrap = document.getElementById("progressWrap");
+  const progressBar = document.getElementById("progressBar");
+  progressWrap.style.display = "block";
+  progressBar.style.width = "10%";
+
+  const formData = new FormData();
+  formData.append("fileName", fileName);
+  formData.append("describtion", describtion || "");
+  if (selectedFile) formData.append("file", selectedFile);
+
+  try {
+    progressBar.style.width = "40%";
+    await axios.post("https://robbie-3fob.onrender.com/robert/uploadOss", formData, {
+      headers: { Authorization: token },
+      onUploadProgress: e => {
+        const pct = Math.round((e.loaded / e.total) * 60) + 40;
+        progressBar.style.width = pct + "%";
+      }
+    });
+
+    progressBar.style.width = "100%";
+    setTimeout(() => {
+      progressWrap.style.display = "none";
+      progressBar.style.width = "0%";
+    }, 600);
+
+    showToast("发布成功 ✓", "success");
+    setTimeout(() => {
+      resetForm();
+      history.back();
+    }, 1200);
+
+  } catch(e) {
+    progressWrap.style.display = "none";
+    progressBar.style.width = "0%";
+    showToast("发布失败，请重试", "error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "发布";
+  }
+}
+</script>
+</body>
+</html>

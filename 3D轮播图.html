@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/intro.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="./css/button.css" />
+		<link rel="stylesheet" href="css/card.css" />
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+  	<link rel="stylesheet" href="css/backgroud.css" />
+	<link rel="stylesheet" href="css/lyrics.css" />
+	<title>Secondary Fixed Navigation</title>
+</head>
+<body>
+	<header class="cd-header">
+		<div id="cd-logo"><a href="#0"><img src="img/cd-logo.svg" alt="Logo"></a></div>
+		<nav class="cd-primary-nav">
+			<ul>
+				<!-- inser more links here -->
+				<li><a href="./login.html">Login out</a></li>
+				<li><a href="./IndividulSpace.html">UserSpace</a></li>
+				<li><a href="#0">Buy</a></li>
+			</ul>
+		</nav> <!-- cd-primary-nav -->
+	</header>
+	<section id="cd-intro">
+		<div id="cd-intro-tagline">
+			<h1>Robert Plant</h1>
+		</div> <!-- #cd-intro-tagline -->
+	</section> <!-- #cd-intro -->
+	<div class="cd-secondary-nav">
+		<a href="#0" class="cd-secondary-nav-trigger">Menu<span></span></a> <!-- button visible on small devices -->
+		<nav>
+			<ul>
+				<li>
+					<a href="#cd-placeholder-1">
+						<b>Intro</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#feed">
+						<b>动态帖子</b>
+						<span onclick="scrollToSection('feed')"></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#cd-placeholder-3">
+						<b>Chat</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#cd-placeholder-4">
+						<b>Calendar</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#cd-placeholder-5">
+						<b>Stats</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div> <!-- .cd-secondary-nav -->
+	<main class="cd-main-content">
+		<section id="cd-placeholder-1" class="cd-section cd-container" style="padding-top: 5px;">		
+			<!-- //螺旋播放器 -->
+			<div class="spiral-container" style="position: relative; z-index: 2;">
+			    <div id="spiral" class="spiral"></div>
+			    <div id="spiral2" class="spiral"></div>
+			  </div>
+		<!-- 白色圆环 -->
+		 <div class="dot-wrap">   
+			<button class="dot-btn" id="playBtn" aria-label="action"></button>
+		</div>
+		<!-- //lyrics -->
+		<div class="lyrics-container">
+		    <div class="lyrics-list" id="lyricsList"></div>
+		</div>
+			<div class="carousel" id="carousel-1">
+				<!-- //旋转羽毛 -->
+				<div class="scene">
+				  <div class="sphere">
+				    <div class="circle z"></div>
+					<div class="circle x"></div>
+				  </div>
+				  <div class="feather"><img id="spinfeather" src="./img/spin-1.png" alt="" /></div>
+				</div>
+				<!-- //轮播图 -->
+					<div class="carousel-control-button left"><input type="radio" name="carousel-control-input"></div>
+					<div class="carousel-control-button right"><input type="radio" name="carousel-control-input" checked></div>
+			
+					<div class="carousel-rotation-direction">
+			
+							<ul class="carousel-item-wrapper" style="--_num-elements: 11">
+									<li class="carousel-item" style="--_index: 2; --_image-url: url('../img/10.jpg')"><a href="" target="_blank">2</a></li>
+									<li class="carousel-item" style="--_index: 1; --_image-url: url('../img/11.jpg')"><a href="" target="_blank">1</a></li>
+									<li class="carousel-item" style="--_index: 3; --_image-url: url('../img/1.jpg')"><a href="" target="_blank">3</a></li>
+									<li class="carousel-item" style="--_index: 5; --_image-url: url('../img/3.jpg')"><a href="" target="_blank">5</a></li>
+									<li class="carousel-item" style="--_index: 4; --_image-url: url('../img/2.jpg')"><a href="" target="_blank">4</a></li>
+									<li class="carousel-item" style="--_index: 6; --_image-url: url('../img/4.jpg')"><a href="" target="_blank">6</a></li>
+									<li class="carousel-item" style="--_index: 7; --_image-url: url('../img/5.jpg')"><a href="./img/61G50BRk6CL._SL1024_.jpg" target="_blank">7</a></li>
+									<li class="carousel-item" style="--_index: 8; --_image-url: url('../img/6.jpg')"><a href="" target="_blank">8</a></li>
+									<li class="carousel-item" style="--_index: 9; --_image-url: url('../img/7.jpg')"><a href="" target="_blank">9</a></li>
+									<li class="carousel-item" style="--_index: 10; --_image-url: url('../img/8.jpg')"><a href="" target="_blank">  10</a></li>
+									<li class="carousel-item" style="--_index: 11; --_image-url: url('../img/9.jpg')"><a href="" target="_blank">A</a></li>
+									<li class="carousel-ground"></li>
+							</ul>
+			</div>
+			</div>
+		</section> <!-- #cd-placeholder-1 -->
+		<section id="feed" class="cd-section cd-container">		
+		<div class="search-bar">
+		    <input
+		        type="text"
+		        id="searchInput"
+		        placeholder="搜索文件名..."
+		    />
+		    <select id="typeSelect">
+		        <option value="">全部类型</option>
+		        <option value="image">图片</option>
+		        <option value="video">视频</option>
+		        <option value="document">文本</option>
+		        <option value="other">其他</option>
+		    </select>
+		    <button onclick="searchFiles()">搜索</button>
+		</div>
+		    <!-- 筛选按钮 -->
+		    <div id="feedFilter" class="feed-filter">
+		        <button id="latestBtn" class="active">最新</button>
+		        <button id="hotBtn">最热</button>
+		        <div id="indicator"></div>
+		    </div>
+		
+		    <!-- 动态列表 -->
+		    <div id="fileGrid" class="grid"></div>
+		
+		    <!-- 分页 -->
+		    <div class="pagination">
+		        <button class="page-btn prev" onclick="changeFeedPage(-1)">
+		            &lt;
+		        </button>
+		    
+		        <span id="feedPageText"></span>
+		    
+		        <button class="page-btn next" onclick="changeFeedPage(1)">
+		            &gt;
+		        </button>
+		    </div>
+		</section>
+ <!-- #cd-placeholder-2 -->
+		<section id="cd-placeholder-3" class="cd-section cd-container">
+			<h2>Chat</h2>
+		</section> <!-- #cd-placeholder-3 -->
+
+		<section id="cd-placeholder-4" class="cd-section cd-container">
+			<h2>Calendar</h2>
+		</section> <!-- #cd-placeholder-4 -->
+
+		<section id="cd-placeholder-5" class="cd-section cd-container">
+			<h2>Stats</h2>
+		</section> <!-- #cd-placeholder-5 -->
+	</main> <!-- .cd-main-content -->
+	<canvas></canvas>
+	<script src="js/background.js"></script>
+	<script src="js/card.js"></script>
+	<script src="js/lyrics.js"></script>
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+<script>
+/* ========== 基础状态 ========== */
+let feedMode = 'latest';     // latest | hot
+let feedPage = 1;
+const pageSize = 6;
+let totalPages = 1;
+let currentKeyword = '';  // 搜索关键词
+let currentType = '';     // 类型筛选
+
+const latestBtn = document.getElementById('latestBtn');
+const hotBtn = document.getElementById('hotBtn');
+const fileGrid = document.getElementById('fileGrid');
+const feedPageText = document.getElementById('feedPageText');
+const indicator = document.getElementById('indicator');
+
+/* ========== 登录态 ========== */
+/* ========= GitHub 回调 token 处理 ========= */
+(function () {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const username = params.get("username");
+	const userId = params.get("userId");
+    if (token) {
+        const user = {
+			userId:Number(userId),
+            token: token,
+            userName: username
+        };
+
+        localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+        // 清除 URL 参数（防止刷新重复登录）
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        console.log("GitHub 登录成功", user);
+    }
+})();
+
+/* ========= 登录态校验 ========= */
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+if (!loggedInUser || !loggedInUser.token) {
+    window.location.href = "login.html";
+}
+
+/* ========== 加载动态 ========== */
+function loadFeed() {
+    let url = '';
+    const params = {
+        currentPage: feedPage,
+        pageSize: pageSize
+    };
+
+    if (currentKeyword) params.name = currentKeyword;
+    if (currentType) params.type = currentType;
+
+    if (feedMode === 'latest') {
+        url = 'https://robbie-3fob.onrender.com/robert/getFileByTime';
+    } else {
+        url = 'https://robbie-3fob.onrender.com:820/robert/getFileByLike';
+    }
+
+    axios.get(url, {
+        params,
+        headers: { Authorization: loggedInUser.token }
+    }).then(res => {
+        const page = res.data;
+
+        const files = page.records || [];
+        totalPages = page.pages || 1;
+
+        renderFiles(files);
+        feedPageText.innerText = `第 ${feedPage} / ${totalPages} 页`;
+    }).catch(err => {
+        console.error("loadFeed error", err);
+  });
+}
+/* ========== 渲染动态文件列表 ========== */
+function renderFiles(files) {
+    fileGrid.innerHTML = "";
+    if (!files || files.length === 0) {
+        fileGrid.innerHTML = `<div class="empty">暂无动态</div>`;
+        return;
+    }
+
+files.forEach(file => {
+    const card = document.createElement("div");
+    card.className = "feed-card";
+
+    const mediaContainer = document.createElement("div");
+    mediaContainer.className = "img-box";
+
+    // ===== 媒体渲染 =====
+    if (file.fileType === "image" || file.fileType === "video") {
+
+        if (file.ossUrl) {
+            // OSS 直接渲染
+            if (file.fileType === "image") {
+                const img = new Image();
+                img.src = file.ossUrl;
+                img.alt = file.fileName;
+                mediaContainer.appendChild(img);
+            } else {
+                const video = document.createElement("video");
+                video.src = file.ossUrl;
+                video.controls = true;
+                mediaContainer.appendChild(video);
+            }
+            appendCaption(mediaContainer, file);
+
+        } else {
+            // 本地磁盘通过 axios 异步获取 blob
+            axios.get(
+                `https://robbie-3fob.onrender.com/robert/getFileById/${file.id}`,
+                { responseType: "blob", headers: { Authorization: loggedInUser.token } }
+            ).then(res => {
+                const url = URL.createObjectURL(res.data);
+
+                if (file.fileType === "image") {
+                    const img = new Image();
+                    img.src = url;
+                    img.alt = file.fileName;
+                    mediaContainer.appendChild(img);
+                } else {
+                    const video = document.createElement("video");
+                    video.src = url;
+                    video.controls = true;
+                    mediaContainer.appendChild(video);
+                }
+
+                appendCaption(mediaContainer, file);
+            }).catch(err => {
+                console.error("加载媒体失败", err);
+                appendCaption(mediaContainer, file);
+            });
+        }
+
+    } else {
+        // 非媒体文件
+        const colors = ["#8ecae6", "#a8dadc", "#ffd166", "#cdb4db", "#b7e4c7"];
+        mediaContainer.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        mediaContainer.style.display = "flex";
+        mediaContainer.style.alignItems = "center";
+        mediaContainer.style.justifyContent = "center";
+        appendCaption(mediaContainer, file);
+    }
+
+    card.appendChild(mediaContainer);
+    fileGrid.appendChild(card);
+
+        // ===== 点赞区 =====
+        const likeDiv = document.createElement("div");
+        likeDiv.className = "feed-meta";
+        const likeIcon = document.createElement("img");
+        likeIcon.src = "./img/灰色.png";
+        likeIcon.alt = "点赞";
+        likeDiv.appendChild(likeIcon);
+
+        let liked = false;
+		const user = JSON.parse(localStorage.getItem("loggedInUser"));
+		console.log("login success",user);
+        axios.get(`https://robbie-3fob.onrender.com/robert/like/hasLiked/${file.id}/${user.userId}`, {
+            headers: { Authorization: user.token }
+        }).then(res => {
+            liked = res.data === true;
+            if (liked) {
+				likeIcon.src = "./img/huangse1.png";
+			likeIcon.classList.add("liked");
+			}
+			
+        });
+
+       likeIcon.addEventListener("click", e => {
+           e.stopPropagation();
+       
+		    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+            const url = liked
+               ? `https://robbie-3fob.onrender.com/robert/like/cancel/check/${file.id}/${user.userId}`
+               : `https://robbie-3fob.onrender.com/robert/like/check/${file.id}/${user.userId}`;
+       
+           axios.get(url, { headers: { Authorization: user.token } })
+               .then(() => {
+                   liked = !liked;
+       
+                   if (liked) {
+                       likeIcon.src = "./img/huangse1.png";
+                       likeIcon.classList.add("liked");
+                   } else {
+                       likeIcon.src = "./img/灰色.png";
+                       likeIcon.classList.remove("liked");
+                   }
+               })
+               .catch(err => console.error("点赞操作失败", err));
+       });
+
+        card.appendChild(mediaContainer);
+        card.appendChild(likeDiv);
+
+        // ===== 编辑按钮 =====
+        if (file.isOwner) {
+            const editBtn = document.createElement("button");
+            editBtn.innerText = "修改";
+            editBtn.onclick = e => {
+                e.stopPropagation();
+                localStorage.setItem("editFile", JSON.stringify(file));
+                window.location.href = "editFile.html";
+            };
+            card.appendChild(editBtn);
+        }
+
+        // ===== 点击跳详情页 =====
+        card.addEventListener("click", () => {
+            localStorage.setItem("currentFile", JSON.stringify(file));
+            //window.location.href = "fileDetail.html";
+                 window.open(`fileDetail.html?id=${file.id}`, "_blank");
+                // 方式2：替换当前页面（不会在浏览器历史中留下记录，按需选择）
+                // window.location.replace("fileDetail.html");
+
+        });
+
+        fileGrid.appendChild(card);
+    });
+}
+
+
+/* ========== 附加标题/描述 ====== */
+function appendCaption(container, file) {
+    const transparentBox = document.createElement("div");
+    transparentBox.className = "transparent-box";
+    const caption = document.createElement("div");
+    caption.className = "caption";
+    const titleP = document.createElement("p");
+    titleP.textContent = file.fileName;
+    const subP = document.createElement("p");
+    subP.textContent = file.describtion;
+    caption.appendChild(titleP);
+    caption.appendChild(subP);
+    transparentBox.appendChild(caption);
+    container.appendChild(transparentBox);
+}
+
+/* ========== 分页 ========== */
+function changeFeedPage(step) {
+    const next = feedPage + step;
+    if (next < 1 || next > totalPages) return;
+    feedPage = next;
+    loadFeed();
+}
+
+/* ========== 最新/最热切换 ========== */
+latestBtn.onclick = () => {
+    if (feedMode === 'latest') return;
+    feedMode = 'latest';
+    feedPage = 1;
+    latestBtn.classList.add("active");
+    hotBtn.classList.remove("active");
+    updateIndicator();
+    loadFeed();
+};
+
+hotBtn.onclick = () => {
+    if (feedMode === 'hot') return;
+    feedMode = 'hot';
+    feedPage = 1;
+    hotBtn.classList.add("active");
+    latestBtn.classList.remove("active");
+    updateIndicator();
+    loadFeed();
+};
+
+/* ========== 指示条 ====== */
+function updateIndicator() {
+    const active = feedMode === 'latest' ? latestBtn : hotBtn;
+    indicator.style.width = active.offsetWidth + "px";
+    indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+}
+
+/* ========== 搜索 ====== */
+function searchFiles() {
+    currentKeyword = document.getElementById("searchInput").value.trim();
+    currentType = document.getElementById("typeSelect").value;
+    feedPage = 1;
+    loadFeed();
+}
+searchInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.keyCode === 13) {
+        searchFiles();
+    }
+});
+
+/* ========== 初始化 ====== */
+updateIndicator();
+loadFeed();
+</script>
+
+</body>
+</html>

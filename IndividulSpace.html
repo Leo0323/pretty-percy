@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人空间</title>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #181818;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e8e8;
+  --muted: rgba(255,255,255,0.38);
+  --accent: #c8a96e;
+  --accent-dim: rgba(200,169,110,0.12);
+  --red: #e05b5b;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+}
+
+/* ===== 页面 ===== */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* ===== 进场动画 ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.5s ease both; }
+.fade-up-1 { animation: fadeUp 0.5s 0.05s ease both; }
+.fade-up-2 { animation: fadeUp 0.5s 0.12s ease both; }
+.fade-up-3 { animation: fadeUp 0.5s 0.2s ease both; }
+
+/* ===== 个人信息卡 ===== */
+.profile-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface2);
+  border: 2px solid var(--border2);
+  display: block;
+}
+
+.profile-basic { flex: 1; }
+
+.profile-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.profile-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.profile-info {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.info-chip {
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-chip span { color: var(--text); font-weight: 500; }
+
+/* 编辑按钮 */
+.edit-profile-btn {
+  position: absolute;
+  top: 28px;
+  right: 32px;
+  background: var(--accent-dim);
+  border: 0.5px solid rgba(200,169,110,0.3);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.edit-profile-btn.two{
+	top: 108px;
+}
+.edit-profile-btn:hover {
+  background: rgba(200,169,110,0.2);
+  border-color: rgba(200,169,110,0.5);
+}
+
+/* ===== 编辑面板 ===== */
+.edit-panel {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+  display: none;
+}
+.edit-panel.open {
+  display: block;
+  animation: fadeUp 0.3s ease both;
+}
+
+.edit-panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid var(--border);
+  letter-spacing: 0.5px;
+}
+
+.edit-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+
+.form-label {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.form-input {
+  height: 40px;
+  padding: 0 14px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--accent); }
+
+/* 头像上传区 */
+.avatar-upload-area {
+  grid-column: auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: var(--surface2);
+  border: 0.5px dashed var(--border2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.avatar-upload-area:hover { border-color: var(--accent); }
+
+.avatar-preview {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+}
+
+.avatar-upload-text { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.avatar-upload-text strong { color: var(--accent); font-weight: 500; }
+
+#avatarFileInput { display: none; }
+
+/* 按钮组 */
+.edit-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-save {
+  background: var(--accent);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-save:hover { opacity: 0.85; }
+.btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 0.5px solid var(--border2);
+  border-radius: 999px;
+  padding: 9px 24px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.btn-cancel:hover { color: var(--text); }
+
+
+/* ===== 切换按钮 ===== */
+.toggle-switch {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 999px;
+  padding: 4px;
+  width: fit-content;
+  margin: 0 auto 28px;
+}
+
+.toggle-switch button {
+  border: none;
+  background: transparent;
+  padding: 7px 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.toggle-switch button.active {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+}
+
+/* ===== 帖子网格 ===== */
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* ===== 帖子卡片 ===== */
+.post-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(.2,.8,.2,1), border-color 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border2);
+}
+
+.post-thumb {
+  height: 150px;
+  background: var(--surface2);
+  overflow: hidden;
+  position: relative;
+}
+
+.post-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.post-card:hover .post-thumb img { transform: scale(1.05); }
+
+.post-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--muted);
+}
+
+.post-body { padding: 12px 14px 14px; }
+
+.post-title {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-meta {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.2px;
+}
+
+/* ===== 空状态 ===== */
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted);
+  padding: 80px 0;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+/* ===== 分页 ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.pagination button {
+  border: 0.5px solid var(--border2);
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+}
+.pagination button:hover { background: var(--surface2); }
+.pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+#pageInfo { font-size: 12px; color: var(--muted); min-width: 60px; text-align: center; }
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  color: var(--text);
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ===== 个人信息卡 ===== -->
+  <div class="profile-card fade-up">
+    <div class="avatar-wrap">
+      <img src="" alt="头像" class="profile-avatar" id="avatar">
+    </div>
+    <div class="profile-basic">
+      <div class="profile-name" id="username">—</div>
+      <div class="profile-sub" id="email">—</div>
+	  <div class="profile-sub" id="bio" style="margin-top:4px; font-style:italic; color:var(--accent); opacity:0.7;" >—</div>
+      <div class="profile-info" id="profileChips"></div>
+    </div>
+    <!-- <button class="edit-profile-btn" id="editToggleBtn" onclick="toggleEdit()">编辑资料</button> -->
+
+	  <button class="edit-profile-btn two" onclick="window.open('upload.html','_self')">发布帖子</button>
+	  <button class="edit-profile-btn" id="editToggleBtn" onclick="toggleEdit()">编辑资料</button>
+
+  </div>
+
+  <!-- ===== 编辑面板 ===== -->
+  <div class="edit-panel fade-up-1" id="editPanel">
+    <div class="edit-panel-title">编辑个人资料</div>
+    <div class="edit-form">
+	<div class="form-group">
+	<label class="form-label">头像</label>
+      <div class="avatar-upload-area" onclick="document.getElementById('avatarFileInput').click()">
+		<img id="avatarPreview" class="avatar-preview" src="" alt="">
+        <div class="avatar-upload-text">
+          <strong>点击更换头像</strong><br>
+          支持 JPG / PNG，建议正方形图片
+        </div>
+        <input type="file" id="avatarFileInput" accept="image/*" onchange="previewAvatar(this)">
+      </div>
+	  </div>
+	  <!-- 旁边加个签输入，和头像并排 -->
+	  <div class="form-group" style="justify-content:center;">
+	    <label class="form-label">个性签名</label>
+	    <textarea class="form-input" id="editBio" placeholder="写点什么…" 
+	      style="height:100%;min-height:88px;padding:10px 14px;resize:none;"></textarea>
+	  </div>
+
+      <div class="form-group">
+        <label class="form-label">用户名</label>
+        <input class="form-input" id="editUsername" type="text" placeholder="用户名">
+      </div>
+      <div class="form-group">
+        <label class="form-label">邮箱</label>
+        <input class="form-input" id="editEmail" type="email" placeholder="邮箱">
+      </div>
+      <div class="form-group">
+        <label class="form-label">性别</label>
+        <input class="form-input" id="editSex" type="text" placeholder="Male / Female">
+      </div>
+      <div class="form-group">
+        <label class="form-label">新密码（不改则留空）</label>
+        <input class="form-input" id="editPassword" type="password" placeholder="留空则不修改">
+      </div>
+
+      <div class="edit-actions">
+        <span class="save-msg" id="saveMsg"></span>
+        <button class="btn-cancel" onclick="toggleEdit()">取消</button>
+        <button class="btn-save" id="saveBtn" onclick="saveProfile()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 切换按钮 ===== -->
+  <div class="toggle-switch fade-up-2">
+    <button id="btnMyPosts" class="active" onclick="switchTab('my')">我的帖子</button>
+    <button id="btnLikedPosts" onclick="switchTab('like')">我喜欢的</button>
+  </div>
+
+  <!-- ===== 帖子列表 ===== -->
+  <div class="post-grid fade-up-3" id="postList"></div>
+
+  <div class="pagination" id="pagination">
+    <button id="prevPage" onclick="changePage(-1)">← 上一页</button>
+    <span id="pageInfo">1 / 1</span>
+    <button id="nextPage" onclick="changePage(1)">下一页 →</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== 登录态 ===== */
+const loggedUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+if (!loggedUser || !loggedUser.token) { alert("请先登录"); location.href = "login.html"; }
+const token = loggedUser.token;
+
+/* ===== 状态 ===== */
+let userId = null;
+let currentUserData = {};
+let selectedAvatarFile = null;
+let currentPage = 1;
+let totalPages = 1;
+let currentMode = "my";
+const pageSize = 8;
+
+/* ===== Toast ===== */
+function showToast(msg, duration = 2200) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), duration);
+}
+
+/* ===== 加载用户信息 ===== */
+axios.get("https://robbie-3fob.onrender.com/robert/UserSpace", { headers: { Authorization: token } })
+  .then(res => {
+    const u = res.data;
+    currentUserData = u;
+    userId = u.userId;
+	username = u.userName;
+    document.getElementById("avatar").src = u.avatar || "https://via.placeholder.com/110/181818/888?text=U";
+    document.getElementById("username").innerText = u.userName || "—";
+    document.getElementById("email").innerText = u.email || "";
+	document.getElementById("bio").innerText = u.bio || "";
+
+    const chips = document.getElementById("profileChips");
+    chips.innerHTML = "";
+    if (u.userId)  chips.innerHTML += `<div class="info-chip">ID <span>${u.userId}</span></div>`;
+    if (u.age)     chips.innerHTML += `<div class="info-chip">Age <span>${u.age}</span></div>`;
+    if (u.sex)     chips.innerHTML += `<div class="info-chip">Gender <span>${u.sex}</span></div>`;
+
+    // 填充编辑表单默认值
+    document.getElementById("editUsername").value = u.userName || "";
+    document.getElementById("editEmail").value = u.email || "";
+    document.getElementById("editSex").value = u.sex || "";
+    document.getElementById("avatarPreview").src = u.avatar || "https://via.placeholder.com/60/181818/888?text=U";
+	document.getElementById("editBio").value = u.bio || "";
+    loadPosts();
+  })
+  .catch(() => showToast("获取用户信息失败"));
+
+/* ===== 编辑面板开关 ===== */
+function toggleEdit() {
+  const panel = document.getElementById("editPanel");
+  const btn = document.getElementById("editToggleBtn");
+  const isOpen = panel.classList.toggle("open");
+  btn.textContent = isOpen ? "收起" : "编辑资料";
+  if (isOpen) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+/* ===== 头像预览 ===== */
+function previewAvatar(input) {
+  if (!input.files[0]) return;
+  selectedAvatarFile = input.files[0];
+  document.getElementById("avatarPreview").src = URL.createObjectURL(selectedAvatarFile);
+}
+
+/* ===== 保存资料 ===== */
+async function saveProfile() {
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "保存中…";
+
+  try {
+    // 1. 更新用户信息（JSON）
+    const users = {
+      userId: userId,
+      userName: document.getElementById("editUsername").value.trim() || undefined,
+      email:    document.getElementById("editEmail").value.trim()    || undefined,
+      sex:      document.getElementById("editSex").value.trim()      || undefined,
+	  bio:     document.getElementById("editBio").value.trim() || undefined,
+    };
+    const pwd = document.getElementById("editPassword").value;
+    if (pwd) users.password = pwd;
+
+    await axios.post("https://robbie-3fob.onrender.com/robert/updateUser", users, {
+      headers: { Authorization: token, "Content-Type": "application/json" }
+    });
+
+    // 2. 有头像才单独上传
+    if (selectedAvatarFile) {
+      const formData = new FormData();
+      formData.append("avatar", selectedAvatarFile);
+      await axios.post("https://robbie-3fob.onrender.com/robert/updateBio", formData, {
+        headers: { Authorization: token }
+      });
+      document.getElementById("avatar").src = URL.createObjectURL(selectedAvatarFile);
+    }
+
+    document.getElementById("username").innerText = users.userName || currentUserData.userName;
+    document.getElementById("email").innerText = users.email || currentUserData.email;
+	document.getElementById("bio").innerText = users.bio || currentUserData.bio;
+    const msg = document.getElementById("saveMsg");
+    msg.classList.add("show");
+    setTimeout(() => msg.classList.remove("show"), 2500);
+    showToast(`<div  style="color: green;">资料已更新</div>`);
+    selectedAvatarFile = null;
+	toggleEdit();
+  } catch(e) {
+    showToast("保存失败，请重试");
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = "保存";
+  }
+}
+/* ===== 切换 tab ===== */
+function switchTab(mode) {
+  currentMode = mode;
+  currentPage = 1;
+  document.getElementById("btnMyPosts").classList.toggle("active", mode === "my");
+  document.getElementById("btnLikedPosts").classList.toggle("active", mode === "like");
+  loadPosts();
+}
+
+function changePage(step) {
+  const next = currentPage + step;
+  if (next < 1 || next > totalPages) return;
+  currentPage = next;
+  loadPosts();
+}
+
+function updatePagination() {
+  document.getElementById("pageInfo").innerText = `${currentPage} / ${totalPages}`;
+  document.getElementById("prevPage").disabled = currentPage <= 1;
+  document.getElementById("nextPage").disabled = currentPage >= totalPages;
+}
+
+/* ===== 加载帖子 ===== */
+function loadPosts() {
+  const postList = document.getElementById("postList");
+  postList.innerHTML = "";
+
+  if (currentMode === "my") {
+    if (!userId) return;
+    axios.get(`https://robbie-3fob.onrender.com/robert/getUserFile/${encodeURIComponent(userId)}`, {
+      headers: { Authorization: token },
+      params: { currentPage, pageSize }
+    }).then(res => {
+      renderPosts(res.data.records || [], res.data.pages || 1);
+    }).catch(() => postList.innerHTML = '<div class="empty">加载失败</div>');
+  } else {
+    if (!userId) return;
+    axios.get(`https://robbie-3fob.onrender.com/robert/like/getUserLike/${userId}`, {
+      headers: { Authorization: token },
+      params: { currentPage, pageSize }
+    }).then(res => {
+      renderPosts(res.data.records || [], res.data.pages || 1);
+    }).catch(() => postList.innerHTML = '<div class="empty">加载失败</div>');
+  }
+}
+
+function renderPosts(list, pages) {
+  totalPages = pages;
+  const postList = document.getElementById("postList");
+  postList.innerHTML = "";
+
+  if (!list.length) {
+    postList.innerHTML = '<div class="empty">暂无内容</div>';
+    updatePagination();
+    return;
+  }
+
+  list.forEach((file, i) => {
+    const card = document.createElement("div");
+    card.className = "post-card";
+    card.style.animationDelay = (i * 0.04) + "s";
+
+    const thumb = document.createElement("div");
+    thumb.className = "post-thumb";
+
+    if (file.ossUrl) {
+         if (file.fileType === 'video') {
+             const el = document.createElement('video');
+             el.src = file.ossUrl;
+             el.style.width = '100%';
+             el.style.height = '100%';
+             el.style.objectFit = 'cover';
+             thumb.appendChild(el);
+         } else {
+             const img = document.createElement('img');
+             img.src = file.ossUrl;
+             img.alt = file.fileName;
+             thumb.appendChild(img);
+         }
+    } else if (file.fileType === "image" || file.fileType === "video") {
+      axios.get(`https://robbie-3fob.onrender.com/robert/getFileById/${file.id}`,
+        { responseType: "blob", headers: { Authorization: token } }
+      ).then(r => {
+        appendMedia(thumb, file, URL.createObjectURL(r.data));
+      });
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "post-thumb-placeholder";
+      ph.textContent = "📄";
+      thumb.appendChild(ph);
+    }
+
+function appendMedia(container, file, src) {
+    let el;
+    if (file.fileType === 'image') {
+        el = new Image();
+        el.alt = file.fileName;
+    } else {
+        el = document.createElement('video');
+        el.controls = true;
+    }
+    el.src = src;
+	container.appendChild(el);
+	}
+
+    const body = document.createElement("div");
+    body.className = "post-body";
+    body.innerHTML = `
+      <div class="post-title">${file.fileName || "未命名"}</div>
+      <div class="post-meta">${(file.uploadTime || "").slice(0,10)} · ${file.fileType || ""}</div>
+    `;
+
+    card.appendChild(thumb);
+    card.appendChild(body);
+    card.onclick = () => {
+      localStorage.setItem("currentFile", JSON.stringify(file));
+      window.open(`fileDetail.html?id=${file.id}`, "_blank");
+    };
+    postList.appendChild(card);
+  });
+
+  updatePagination();
+}
+</script>
+</body>
+</html>

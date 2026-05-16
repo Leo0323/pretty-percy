@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>帖子详情</title>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<link href="//unpkg.com/layui@2.7.6/dist/css/layui.css" rel="stylesheet">
+<script src="//unpkg.com/layui@2.7.6/dist/layui.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #181818;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8e8e8;
+  --muted: rgba(255,255,255,0.38);
+  --accent: #c8a96e;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+}
+
+.page {
+  display: flex;
+  height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-left: 0.5px solid var(--border);
+  border-right: 0.5px solid var(--border);
+}
+
+/* ===== 左侧媒体 ===== */
+.left {
+  flex: 1.2;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 0.5px solid var(--border);
+  min-width: 0;
+}
+.left img, .left video {
+  max-width: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+  display: block;
+}
+.left-text {
+  padding: 48px 40px;
+  text-align: center;
+}
+.left-text .lt-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+.left-text .lt-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* ===== 右侧面板 ===== */
+.right {
+  width: 400px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--surface);
+}
+
+/* 作者栏 */
+.author-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+.author-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.author-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.author-time {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* 帖子描述 */
+.post-desc-area {
+  display: flex;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+.post-desc-body { flex: 1; min-width: 0; }
+.post-desc-name {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* 点赞/评论数 */
+.stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 18px;
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+.like-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.like-btn:hover { color: #e05b5b; }
+.like-btn.liked { color: #e05b5b; }
+.like-btn.liked i { color: #e05b5b; }
+.like-btn i { font-size: 17px; }
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.stat-item i { font-size: 17px; }
+.stat-value { font-weight: 500; color: var(--text); }
+
+/* 评论列表 */
+.comment-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.comment-box::-webkit-scrollbar { width: 4px; }
+.comment-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+/* 单条评论 */
+.comment {
+
+  gap: 10px;
+  padding: 8px 18px;
+  animation: fadeIn 0.3s ease both;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.comment-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.comment-body { flex: 1; min-width: 0; }
+
+/* 用户名+内容在同一行 */
+.comment-inline {
+  font-size: 13px;
+      position: relative;
+      top: -8px;
+  color: rgba(255,255,255,0.75);
+  word-break: break-word;
+}
+.comment-user {
+	    position: relative;
+	    top: -26px;
+	    left: 40px;
+  font-weight: 500;
+}
+.comment-reply-to {
+  font-size: 13px;
+  color: var(--accent);
+  margin-right: 4px;
+}
+
+/* 时间+操作在第二行 */
+.comment-footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+.comment-time { font-size: 11px; color: var(--muted); }
+.comment-action-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+.comment-action-btn:hover { color: var(--text); }
+
+/* 子评论缩进 */
+.comment.sub { padding-left: 30px; }
+
+/* 加载更多 */
+.load-more-container {
+  padding: 6px 18px 6px;
+  flex-shrink: 0;
+}
+.load-more-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.load-more-btn:hover { color: var(--accent); }
+.load-more-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.sub-load-more {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 0 4px 58px;
+  display: block;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  text-align: left;
+}
+.sub-load-more:hover { color: var(--accent); }
+
+.no-comments {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 20px;
+  font-size: 13px;
+}
+
+/* 回复提示 */
+#replyInfo {
+  padding: 6px 18px;
+  font-size: 12px;
+  color: var(--accent);
+  background: rgba(200,169,110,0.06);
+  border-top: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* 输入区 */
+.input-box {
+  border-top: 0.5px solid var(--border);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+.input-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+#content {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  resize: none;
+  min-height: unset;
+  height: 20px;
+  line-height: 20px;
+  padding: 0;
+  width: 100%;
+}
+#content::placeholder { color: var(--muted); }
+.send {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  flex-shrink: 0;
+  margin-top: 0;
+  float: none;
+  border-radius: 0;
+}
+.send.active { opacity: 1; }
+
+/* 作者操作按钮 - 图标样式 */
+.author-action-icon {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.author-action-icon:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+.author-action-icon.delete-icon {
+  color: #e05b5b;
+}
+.author-action-icon.delete-icon:hover {
+  color: #ff6b6b;
+  background: rgba(224, 91, 91, 0.1);
+}
+
+.author-action-btn:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+.author-action-btn.delete-btn {
+  color: #e05b5b;
+}
+.author-action-btn.delete-btn:hover {
+  color: #ff6b6b;
+  background: rgba(224, 91, 91, 0.1);
+}
+#authorActions{
+	display: grid; 
+	gap: 12px;
+	position: absolute;
+	    left: 160px;
+	    bottom: 20px;
+}
+.author-action-icon i {
+  font-size: 27px;  /* 改这里 */
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="left" id="media"></div>
+  <div class="right">
+
+    <!-- 作者栏 -->
+    <div class="author-bar">
+      <img class="author-avatar" id="authorAvatar" src="https://via.placeholder.com/34/181818/888?text=U" alt="">
+      <div>
+        <div class="author-name" id="authorName">—</div>
+        <div class="author-time" id="authorTime"></div>
+      </div>
+      <!-- 作者操作按钮 -->
+      <div id="authorActions"></div>
+    </div>
+
+    <!-- 帖子描述 -->
+    <div class="post-desc-area">
+    
+      <div class="post-desc-body">
+    
+        <div class="post-desc-text" id="descText"></div>
+      </div>
+    </div>
+
+    <!-- 点赞/评论数 -->
+    <div class="stats-bar">
+      <button class="like-btn" id="likeBtn" onclick="toggleLike()">
+        <i class="layui-icon layui-icon-heart"></i>
+        <span id="likeText">点赞</span>
+        <span class="stat-value" id="likeCount">0</span>
+      </button>
+      <div class="stat-item">
+        <i class="layui-icon layui-icon-comment"></i>
+        <span>评论</span>
+        <span class="stat-value" id="commentCount">0</span>
+      </div>
+    </div>
+
+    <!-- 评论列表 -->
+    <div class="comment-box" id="commentList"></div>
+    <div class="load-more-container" id="loadMoreContainer"></div>
+
+    <!-- 回复提示 -->
+    <div id="replyInfo" style="display:none;"></div>
+
+    <!-- 输入区 -->
+    <div class="input-box">
+      <img class="input-avatar" id="inputAvatar" src="https://via.placeholder.com/28/181818/888?text=U" alt="">
+      <input id="content" placeholder="添加评论…"
+             oninput="toggleSendBtn()"
+             onkeydown="if(event.key==='Enter')sendComment()">
+      <button class="send" id="sendBtn" onclick="sendComment()">发布</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const BASE = "https://robbie-3fob.onrender.com/robert";
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+const fileId = new URLSearchParams(location.search).get("id");
+
+let parentPage = 1;
+let parentTotal = 0;
+let subPageMap = {};
+let subTotalMap = {};
+let loadingParent = false;
+let replyPid = 0, replyUserId = 0, replyUsername = "";
+let fileOwnerId = null;
+
+const mediaContainer = document.getElementById("media");
+
+function toggleSendBtn() {
+  const v = document.getElementById("content").value.trim();
+  document.getElementById("sendBtn").classList.toggle("active", v.length > 0);
+}
+
+/* 加载文件 */
+axios.get(`${BASE}/JsonById/${fileId}`, { headers: { Authorization: user.token } })
+.then(res => {
+  const f = res.data;
+  fileOwnerId = f.id;
+
+  document.getElementById("descText").innerText = f.describtion || "";
+  document.getElementById("authorTime").innerText = (f.uploadTime || "").slice(0, 10);
+
+  // 加载作者信息
+  // 加载作者信息
+  axios.get(`${BASE}/getUserByFileName/${fileOwnerId}`, { headers: { Authorization: user.token } })
+  .then(ress => {
+    const u = ress.data;
+	console.log(u);
+    const avatar = u.avatar || "https://via.placeholder.com/34/181818/888?text=U";
+	console.log(u.avatar);
+    const uid = u.userId;
+    
+    document.getElementById("authorAvatar").src = avatar;
+    document.getElementById("authorName").innerText = u.userName || f.userName || "—";
+  
+   // 权限检查：只有当前用户是帖子发布者才显示操作按钮
+   if (uid == user.userId) {
+     const actionsDiv = document.getElementById("authorActions");
+     actionsDiv.innerHTML = `
+       <button class="author-action-icon" 
+               onclick="editPost(${fileId})" 
+               title="编辑">
+         <i class="layui-icon layui-icon-edit"></i>
+       </button>
+       <button class="author-action-icon delete-icon" 
+               onclick="deletePost(${fileId})" 
+               title="删除">
+         <i class="layui-icon layui-icon-delete"></i>
+       </button>
+     `;
+   }
+  });
+  // .catch(err => {
+  //   console.error("获取用户信息失败:", err);
+  // });
+  // 当前用户头像
+  axios.get(`${BASE}/getUserId/${user.userId}`, { headers: { Authorization: user.token } })
+  .then(r => {
+    document.getElementById("inputAvatar").src = r.data.avatar || "https://via.placeholder.com/28/181818/888?text=U";
+	console.log(r.data.avatar)
+  });
+
+  loadLikeCount(fileId);
+  checkIfUserLiked(fileId);
+  loadCommentCount(fileId);
+  loadFile(f);
+})
+.catch(err => console.error("加载文件失败:", err));
+
+/* 点赞数 */
+function loadLikeCount(id) {
+  axios.get(`${BASE}/getLikeCount/${id}`, { headers: { Authorization: user.token } })
+  .then(res => document.getElementById("likeCount").innerText = res.data || 0)
+  .catch(() => document.getElementById("likeCount").innerText = "0");
+}
+
+/* 检查是否已点赞 */
+function checkIfUserLiked(id) {
+  axios.get(`${BASE}/like/hasLiked/${id}/${user.userId}`, { headers: { Authorization: user.token } })
+  .then(res => {
+    const liked = res.data === true || res.data === 1 || res.data === "true";
+    if (liked) {
+      const btn = document.getElementById("likeBtn");
+      btn.classList.add("liked");
+      document.getElementById("likeText").innerText = "已赞";
+      btn.querySelector("i").className = "layui-icon layui-icon-heart-fill";
+    }
+  });
+}
+
+/* 评论数 */
+function loadCommentCount(id) {
+  axios.get(`${BASE}/getCommCount/${id}`, { headers: { Authorization: user.token } })
+  .then(res => document.getElementById("commentCount").innerText = res.data || 0)
+  .catch(() => document.getElementById("commentCount").innerText = "0");
+}
+
+/* 点赞切换 */
+function toggleLike() {
+  const btn = document.getElementById("likeBtn");
+  const icon = btn.querySelector("i");
+  const isLiked = btn.classList.contains("liked");
+  const url = isLiked
+    ? `${BASE}/like/cancel/check/${fileOwnerId}/${user.userId}`
+    : `${BASE}/like/check/${fileOwnerId}/${user.userId}`;
+  axios.get(url, { headers: { Authorization: user.token } })
+  .then(() => {
+    btn.classList.toggle("liked", !isLiked);
+    document.getElementById("likeText").innerText = !isLiked ? "已赞" : "点赞";
+    icon.className = !isLiked ? "layui-icon layui-icon-heart-fill" : "layui-icon layui-icon-heart";
+    setTimeout(() => loadLikeCount(fileId), 300);
+  });
+}
+
+/* 媒体 */
+function loadFile(f) {
+  if (f.fileType === "image") {
+    const img = document.createElement("img");
+    img.src = f.ossUrl || "";
+    img.alt = f.fileName;
+    img.onerror = () => loadLocalFile(f.id, f.fileType);
+    if (!f.ossUrl) loadLocalFile(f.id, f.fileType);
+    else { mediaContainer.innerHTML = ""; mediaContainer.appendChild(img); }
+  } else if (f.fileType === "video") {
+    const video = document.createElement("video");
+    video.src = f.ossUrl || "";
+    video.controls = true;
+    video.onerror = () => loadLocalFile(f.id, f.fileType);
+    if (!f.ossUrl) loadLocalFile(f.id, f.fileType);
+    else { mediaContainer.innerHTML = ""; mediaContainer.appendChild(video); }
+  } else {
+    mediaContainer.innerHTML = `
+      <div class="left-text">
+        <div class="lt-title">${f.fileName}</div>
+        <div class="lt-desc">${f.describtion || ""}</div>
+      </div>`;
+  }
+}
+
+function loadLocalFile(id, type) {
+  axios.get(`${BASE}/getFileById/${id}`, { responseType: "blob", headers: { Authorization: user.token } })
+  .then(res => {
+    const url = URL.createObjectURL(res.data);
+    const el = type === "image" ? document.createElement("img") : document.createElement("video");
+    el.src = url;
+    if (type === "video") el.controls = true;
+    mediaContainer.innerHTML = "";
+    mediaContainer.appendChild(el);
+  });
+}
+
+/* 评论 */
+loadComments();
+
+function loadComments() {
+  if (loadingParent) return;
+  loadingParent = true;
+  axios.get(`${BASE}/getParComm/${fileId}?page=${parentPage}`, { headers: { Authorization: user.token } })
+  .then(res => {
+    loadingParent = false;
+    const data = res.data;
+    const list = data.records || [];
+    parentTotal = data.total || 0;
+    if (!list.length && parentPage === 1) {
+      document.getElementById("commentList").innerHTML = '<div class="no-comments">暂无评论，快来抢沙发吧~</div>';
+      updateLoadMoreBtn(false);
+      return;
+    }
+    list.forEach(renderParent);
+    const loaded = (parentPage - 1) * 10 + list.length;
+    updateLoadMoreBtn(loaded < parentTotal);
+  }).catch(err => { loadingParent = false; });
+}
+
+function updateLoadMoreBtn(hasMore) {
+  const container = document.getElementById("loadMoreContainer");
+  if (hasMore) {
+    container.innerHTML = `<button class="load-more-btn" onclick="loadMoreParent()">查看更多评论</button>`;
+  } else {
+    container.innerHTML = "";
+  }
+}
+
+function loadMoreParent() {
+  const btn = document.querySelector(".load-more-btn");
+  if (btn) { btn.disabled = true; btn.innerText = "加载中..."; }
+  parentPage++;
+  loadComments();
+}
+
+function renderParent(c) {
+  const box = document.getElementById("commentList");
+  const div = document.createElement("div");
+  div.className = "comment";
+  div.innerHTML = `
+    <div class="comment-avatar-circle">${(c.username||"?")[0].toUpperCase()}	</div>
+	<span class="comment-user">${c.username}</span>
+    <div class="comment-body">
+      <div class="comment-inline">
+        ${c.content}
+      </div>
+      <div class="comment-footer">
+        <span class="comment-time">${(c.createTime||"").slice(0,10)}</span>
+        <button class="comment-action-btn" onclick="reply(${c.id},${c.userId},'${c.username}')">回复</button>
+        ${c.userId == user.userId ? `<button class="comment-action-btn" onclick="del(${c.id})" style="color:#e05b5b;">删除</button>` : ""}
+      </div>
+    </div>
+    <div id="sub-${c.id}"></div>
+    <div id="sub-more-btn-${c.id}"></div>`;
+  box.appendChild(div);
+  if (!subPageMap[c.id]) subPageMap[c.id] = 1;
+  subTotalMap[c.id] = 0;
+  loadSub(c.id);
+}
+
+function loadSub(pid) {
+  axios.get(`${BASE}/getSubComm/${pid}/${fileId}?page=${subPageMap[pid]}`, { headers: { Authorization: user.token } })
+  .then(res => {
+    const list = res.data.records || [];
+    subTotalMap[pid] = res.data.total || 0;
+    const box = document.getElementById(`sub-${pid}`);
+    list.forEach(c => {
+      const d = document.createElement("div");
+      d.className = "comment sub";
+      d.innerHTML = `
+        <div class="comment-avatar-circle">${(c.username||"?")[0].toUpperCase()}</div>
+        <div class="comment-body">
+          <div class="comment-inline">
+            <span class="comment-user">${c.username}</span>${c.replyUserName ? `<span class="comment-reply-to">回复 @${c.replyUserName}</span>` : ""}${c.content}
+          </div>
+          <div class="comment-footer">
+            <span class="comment-time">${(c.createTime||"").slice(0,10)}</span>
+            <button class="comment-action-btn" onclick="reply(${pid},${c.userId},'${c.username}')">回复</button>
+            ${c.userId == user.userId ? `<button class="comment-action-btn" onclick="del(${c.id})" style="color:#e05b5b;">删除</button>` : ""}
+          </div>
+        </div>`;
+      box.appendChild(d);
+    });
+    const moreContainer = document.getElementById(`sub-more-btn-${pid}`);
+    moreContainer.innerHTML = "";
+    const loadedSub = (subPageMap[pid] - 1) * 10 + list.length;
+    if (loadedSub < subTotalMap[pid]) {
+      const btn = document.createElement("button");
+      btn.className = "sub-load-more";
+      btn.innerText = "查看更多回复";
+      btn.onclick = () => { subPageMap[pid]++; moreContainer.innerHTML = ""; loadSub(pid); };
+      moreContainer.appendChild(btn);
+    }
+  });
+}
+
+function reply(pid, uid, uname) {
+  replyPid = pid; replyUserId = uid; replyUsername = uname;
+  const el = document.getElementById("replyInfo");
+  el.style.display = "block";
+  el.innerHTML = `回复 @${uname} <span style="float:right;cursor:pointer;color:var(--muted);" onclick="cancelReply()">✕</span>`;
+  document.getElementById("content").focus();
+}
+
+function cancelReply() {
+  replyPid = 0; replyUserId = 0; replyUsername = "";
+  document.getElementById("replyInfo").style.display = "none";
+}
+
+function sendComment() {
+  const text = document.getElementById("content").value.trim();
+  if (!text) return;
+  axios.post(`${BASE}/createComm`, {
+    userId: user.userId, content: text,
+    fileId: Number(fileId), pid: replyPid, replyUserId: replyUserId
+  }, { headers: { Authorization: user.token } })
+  .then(() => {
+    document.getElementById("content").value = "";
+    document.getElementById("sendBtn").classList.remove("active");
+    cancelReply();
+    document.getElementById("commentList").innerHTML = "";
+    document.getElementById("loadMoreContainer").innerHTML = "";
+    parentPage = 1; subPageMap = {}; subTotalMap = {}; loadingParent = false;
+    loadCommentCount(fileId);
+    loadComments();
+    layer.msg("评论成功", { icon: 6 });
+  }).catch(() => layer.msg("发布失败", { icon: 5 }));
+}
+
+function del(id) {
+  if (!confirm("删除评论？")) return;
+  axios.get(`${BASE}/deleteComm/${id}`, { headers: { Authorization: user.token } })
+  .then(() => {
+    document.getElementById("commentList").innerHTML = "";
+    document.getElementById("loadMoreContainer").innerHTML = "";
+    parentPage = 1; subPageMap = {}; subTotalMap = {}; loadingParent = false;
+    loadCommentCount(fileId);
+    loadComments();
+    layer.msg("删除成功", { icon: 6 });
+  }).catch(() => layer.msg("删除失败", { icon: 5 }));
+}
+
+/* 修改帖子 */
+function editPost(id) {
+  // 跳转到编辑页面，或打开编辑模态框
+  // 这里假设有一个编辑页面 /edit.html
+  window.location.href = `/edit.html?id=${id}`;
+  
+  // 如果要在当前页打开模态框编辑，可以使用 layer.open()
+  // layer.open({
+  //   type: 2,
+  //   title: '编辑帖子',
+  //   area: ['600px', '400px'],
+  //   content: `/edit.html?id=${id}`
+  // });
+}
+
+/* 删除帖子 */
+function deletePost(id) {
+  layer.confirm('确认删除此帖子吗？删除后无法恢复。', {
+    btn: ['确定', '取消'],
+    icon: 3,
+    title: '删除提示'
+  }, function(index) {
+    // 调用删除接口
+    axios.delete(`${BASE}/deleteFileBy2/${id}`, {
+      headers: { Authorization: user.token }
+    })
+    .then(res => {
+      layer.msg('删除成功', { icon: 6, time: 1500 }, function() {
+        // 删除后跳转回列表页
+        window.location.href = '/list.html';
+      });
+    })
+    .catch(err => {
+      layer.msg('删除失败：' + (err.response?.data || '未知错误'), { icon: 5 });
+    });
+    layer.close(index);
+  });
+}
+
+</script>
+</body>
+</html>

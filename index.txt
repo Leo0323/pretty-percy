@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+<!-- ✨ Font Awesome 图标库 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- ✨ Swiper JS 库（关键） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<!-- ✨ Ionicons 库（关键） -->
+<script type="module" src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7/dist/ionicons/ionicons.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/newindex.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="./css/button.css" />
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/style.css"> <!-- Resource style --><!-- Modernizr -->
+  	<link rel="stylesheet" href="css/backgroud.css" />
+	
+	<title>Secondary Fixed Navigation</title>
+</head>
+<body>
+	<header class="cd-header">
+		<div id="cd-logo"><a href="#0"><img src="img/cd-logo.svg" alt="Logo"></a></div>
+		<nav class="cd-primary-nav">
+			<ul>
+				<!-- inser more links here -->
+				<li><a href="./login.html">Login out</a></li>
+				<li><a href="./IndividulSpace.html">UserSpace</a></li>
+				<li><a href="#0">Buy</a></li>
+			</ul>
+		</nav> <!-- cd-primary-nav -->
+	</header>
+	<section id="cd-intro">
+		<div id="cd-intro-tagline">
+			<h1>Robert Plant</h1>
+		</div> <!-- #cd-intro-tagline -->
+	</section> <!-- #cd-intro -->
+	<div class="cd-secondary-nav">
+		<a href="#0" class="cd-secondary-nav-trigger">Menu<span></span></a> <!-- button visible on small devices -->
+		<nav>
+			<ul>
+				<li>
+					<a href="#cd-placeholder-1">
+						<b>Intro</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#feed">
+						<b>动态帖子</b>
+						<span onclick="scrollToSection('feed')"></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#cd-placeholder-3">
+						<b>Chat</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#cd-placeholder-4">
+						<b>Calendar</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+				<li>
+					<a href="#cd-placeholder-5">
+						<b>Stats</b>
+						<span></span><!-- icon -->
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div> <!-- .cd-secondary-nav -->
+	<main class="cd-main-content">
+<!-- 这是第二个页面的 intro 部分的替换代码 -->
+<!-- 替换掉原来的 id="cd-placeholder-1" 的整个 section -->
+
+<section id="cd-placeholder-1" class="cd-section cd-container" style="padding-top: 5px;">
+    <!-- ✨ Swiper 音乐播放器替换原来的 3D 轮播 -->
+    <div class="album-cover" style="width: 100%; max-width: 900px; margin: 0 auto;">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/1200x/bd/04/4a/bd044a2bfe30fdae2ee247eb610ee7fc.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=aatr_2MstrI&ab_channel=CleanBandit" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/736x/39/7d/5f/397d5f0e73671972cc1ba826bbcb0951.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=qEnfeG8uBRY&ab_channel=AliciaKeys-Topic" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/1200x/e3/f9/6a/e3f96ae89937f8302b4157189c29869c.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=LgsaD-vNJ9M" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/736x/5f/5f/45/5f5f45f7be4f8486ab60ab002c14325c.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=a5uQMwRMHcs&ab_channel=DaftPunkVEVO" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/736x/6d/f1/73/6df173e9adc369f7bd8793ea42a1d3d1.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=H5v3kku4y6Q&ab_channel=HarryStylesVEVO" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/736x/e2/64/6e/e2646ec8c16179e3e98889ac340ce8e6.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=9HDEHj2yzew&ab_channel=DuaLipa" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://i.pinimg.com/1200x/f8/32/c4/f832c47e38da26bfdaaedd245af47684.jpg" />
+                    <div class="overlay">
+                        <a href="https://www.youtube.com/watch?v=tCXGJQYZ9JA&ab_channel=TaylorSwiftVEVO" target="_blank">
+                            <ion-icon name="logo-youtube"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+				<div class="swiper-slide">
+				    <img src="https://i.pinimg.com/736x/50/88/e4/5088e42e440f94091fbf8a6433a9eaba.jpg" />
+				    <div class="overlay">
+				        <a href="https://www.youtube.com/watch?v=tCXGJQYZ9JA&ab_channel=TaylorSwiftVEVO" target="_blank">
+				            <ion-icon name="logo-youtube"></ion-icon>
+				        </a>
+				    </div>
+				</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✨ 音乐播放器 -->
+    <div class="music-player">
+        <h1>Title</h1>
+        <p>Song Name</p>
+        <audio id="song">
+            <source src="song-list/Luke-Bergs-Gold.mp3" type="audio/mpeg" />
+        </audio>
+        <input type="range" value="0" id="progress" />
+        <div class="controls">
+            <button class="backward">
+                <i class="fa-solid fa-backward"></i>
+            </button>
+            <button class="play-pause-btn">
+                <i class="fa-solid fa-play" id="controlIcon"></i>
+            </button>
+            <button class="forward">
+                <i class="fa-solid fa-forward"></i>
+            </button>
+        </div>
+    </div>
+</section>
+		<section id="feed" class="cd-section cd-container">		
+		<div class="search-bar">
+		    <input
+		        type="text"
+		        id="searchInput"
+		        placeholder="搜索文件名..."
+		    />
+		    <select id="typeSelect">
+		        <option value="">全部类型</option>
+		        <option value="image">图片</option>
+		        <option value="video">视频</option>
+		        <option value="document">文本</option>
+		        <option value="other">其他</option>
+		    </select>
+		    <button onclick="searchFiles()">搜索</button>
+		</div>
+		    <!-- 筛选按钮 -->
+		    <div id="feedFilter" class="feed-filter">
+		        <button id="latestBtn" class="active">最新</button>
+		        <button id="hotBtn">最热</button>
+		        <div id="indicator"></div>
+		    </div>
+		
+		    <!-- 动态列表 -->
+		    <div id="fileGrid" class="grid"></div>
+		
+		    <!-- 分页 -->
+		    <div class="pagination">
+		        <button class="page-btn prev" onclick="changeFeedPage(-1)">
+		            &lt;
+		        </button>
+		    
+		        <span id="feedPageText"></span>
+		    
+		        <button class="page-btn next" onclick="changeFeedPage(1)">
+		            &gt;
+		        </button>
+		    </div>
+		</section>
+ <!-- #cd-placeholder-2 -->
+		<section id="cd-placeholder-3" class="cd-section cd-container">
+			<h2>Chat</h2>
+		</section> <!-- #cd-placeholder-3 -->
+
+		<section id="cd-placeholder-4" class="cd-section cd-container">
+			<h2>Calendar</h2>
+		</section> <!-- #cd-placeholder-4 -->
+
+		<section id="cd-placeholder-5" class="cd-section cd-container">
+			<h2>Stats</h2>
+		</section> <!-- #cd-placeholder-5 -->
+	</main> <!-- .cd-main-content -->
+	<canvas></canvas>
+	<script src="js/background.js"></script>
+
+	<script src="js/newindex.js"></script>
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+<script>
+/* ========== 基础状态 ========== */
+let feedMode = 'latest';     // latest | hot
+let feedPage = 1;
+const pageSize = 6;
+let totalPages = 1;
+let currentKeyword = '';  // 搜索关键词
+let currentType = '';     // 类型筛选
+
+const latestBtn = document.getElementById('latestBtn');
+const hotBtn = document.getElementById('hotBtn');
+const fileGrid = document.getElementById('fileGrid');
+const feedPageText = document.getElementById('feedPageText');
+const indicator = document.getElementById('indicator');
+
+/* ========== 登录态 ========== */
+/* ========= GitHub 回调 token 处理 ========= */
+(function () {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const username = params.get("username");
+	const userId = params.get("userId");
+    if (token) {
+        const user = {
+			userId:Number(userId),
+            token: token,
+            userName: username
+        };
+
+        localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+        // 清除 URL 参数（防止刷新重复登录）
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+        console.log("GitHub 登录成功", user);
+    }
+})();
+
+/* ========= 登录态校验 ========= */
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+if (!loggedInUser || !loggedInUser.token) {
+    window.location.href = "login.html";
+}
+
+/* ========== 加载动态 ========== */
+function loadFeed() {
+    let url = '';
+    const params = {
+        currentPage: feedPage,
+        pageSize: pageSize
+    };
+
+    if (currentKeyword) params.name = currentKeyword;
+    if (currentType) params.type = currentType;
+
+    if (feedMode === 'latest') {
+        url = 'http://localhost:820/robert/getFileByTime';
+    } else {
+        url = 'http://localhost:820/robert/getFileByLike';
+    }
+
+    axios.get(url, {
+        params,
+        headers: { Authorization: loggedInUser.token }
+    }).then(res => {
+        const page = res.data;
+
+        const files = page.records || [];
+        totalPages = page.pages || 1;
+
+        renderFiles(files);
+        feedPageText.innerText = `第 ${feedPage} / ${totalPages} 页`;
+    }).catch(err => {
+        console.error("loadFeed error", err);
+  });
+}
+/* ========== 渲染动态文件列表 ========== */
+function renderFiles(files) {
+    fileGrid.innerHTML = "";
+    if (!files || files.length === 0) {
+        fileGrid.innerHTML = `<div class="empty">暂无动态</div>`;
+        return;
+    }
+
+files.forEach(file => {
+    const card = document.createElement("div");
+    card.className = "feed-card";
+
+    const mediaContainer = document.createElement("div");
+    mediaContainer.className = "img-box";
+
+    // ===== 媒体渲染 =====
+    if (file.fileType === "image" || file.fileType === "video") {
+
+        if (file.ossUrl) {
+            // OSS 直接渲染
+            if (file.fileType === "image") {
+                const img = new Image();
+                img.src = file.ossUrl;
+                img.alt = file.fileName;
+                mediaContainer.appendChild(img);
+            } else {
+                const video = document.createElement("video");
+                video.src = file.ossUrl;
+                video.controls = true;
+                mediaContainer.appendChild(video);
+            }
+            appendCaption(mediaContainer, file);
+
+        } else {
+            // 本地磁盘通过 axios 异步获取 blob
+            axios.get(
+                `http://localhost:820/robert/getFileById/${file.id}`,
+                { responseType: "blob", headers: { Authorization: loggedInUser.token } }
+            ).then(res => {
+                const url = URL.createObjectURL(res.data);
+
+                if (file.fileType === "image") {
+                    const img = new Image();
+                    img.src = url;
+                    img.alt = file.fileName;
+                    mediaContainer.appendChild(img);
+                } else {
+                    const video = document.createElement("video");
+                    video.src = url;
+                    video.controls = true;
+                    mediaContainer.appendChild(video);
+                }
+
+                appendCaption(mediaContainer, file);
+            }).catch(err => {
+                console.error("加载媒体失败", err);
+                appendCaption(mediaContainer, file);
+            });
+        }
+
+    } else {
+        // 非媒体文件
+        const colors = ["#8ecae6", "#a8dadc", "#ffd166", "#cdb4db", "#b7e4c7"];
+        mediaContainer.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        mediaContainer.style.display = "flex";
+        mediaContainer.style.alignItems = "center";
+        mediaContainer.style.justifyContent = "center";
+        appendCaption(mediaContainer, file);
+    }
+
+    card.appendChild(mediaContainer);
+    fileGrid.appendChild(card);
+
+        // ===== 点赞区 =====
+        const likeDiv = document.createElement("div");
+        likeDiv.className = "feed-meta";
+        const likeIcon = document.createElement("img");
+        likeIcon.src = "./img/灰色.png";
+        likeIcon.alt = "点赞";
+        likeDiv.appendChild(likeIcon);
+
+        let liked = false;
+		const user = JSON.parse(localStorage.getItem("loggedInUser"));
+		console.log("login success",user);
+        axios.get(`http://localhost:820/robert/like/hasLiked/${file.id}/${user.userId}`, {
+            headers: { Authorization: user.token }
+        }).then(res => {
+            liked = res.data === true;
+            if (liked) {
+				likeIcon.src = "./img/huangse1.png";
+			likeIcon.classList.add("liked");
+			}
+			
+        });
+
+       likeIcon.addEventListener("click", e => {
+           e.stopPropagation();
+       
+		    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+            const url = liked
+               ? `http://localhost:820/robert/like/cancel/check/${file.id}/${user.userId}`
+               : `http://localhost:820/robert/like/check/${file.id}/${user.userId}`;
+       
+           axios.get(url, { headers: { Authorization: user.token } })
+               .then(() => {
+                   liked = !liked;
+       
+                   if (liked) {
+                       likeIcon.src = "./img/huangse1.png";
+                       likeIcon.classList.add("liked");
+                   } else {
+                       likeIcon.src = "./img/灰色.png";
+                       likeIcon.classList.remove("liked");
+                   }
+               })
+               .catch(err => console.error("点赞操作失败", err));
+       });
+
+        card.appendChild(mediaContainer);
+        card.appendChild(likeDiv);
+
+        // ===== 编辑按钮 =====
+        if (file.isOwner) {
+            const editBtn = document.createElement("button");
+            editBtn.innerText = "修改";
+            editBtn.onclick = e => {
+                e.stopPropagation();
+                localStorage.setItem("editFile", JSON.stringify(file));
+                window.location.href = "editFile.html";
+            };
+            card.appendChild(editBtn);
+        }
+
+        // ===== 点击跳详情页 =====
+        card.addEventListener("click", () => {
+            localStorage.setItem("currentFile", JSON.stringify(file));
+            //window.location.href = "fileDetail.html";
+                 window.open(`fileDetail.html?id=${file.id}`, "_blank");
+                // 方式2：替换当前页面（不会在浏览器历史中留下记录，按需选择）
+                // window.location.replace("fileDetail.html");
+
+        });
+
+        fileGrid.appendChild(card);
+    });
+}
+
+
+/* ========== 附加标题/描述 ====== */
+function appendCaption(container, file) {
+    const transparentBox = document.createElement("div");
+    transparentBox.className = "transparent-box";
+    const caption = document.createElement("div");
+    caption.className = "caption";
+    const titleP = document.createElement("p");
+    titleP.textContent = file.fileName;
+    const subP = document.createElement("p");
+    subP.textContent = file.describtion;
+    caption.appendChild(titleP);
+    caption.appendChild(subP);
+    transparentBox.appendChild(caption);
+    container.appendChild(transparentBox);
+}
+
+/* ========== 分页 ========== */
+function changeFeedPage(step) {
+    const next = feedPage + step;
+    if (next < 1 || next > totalPages) return;
+    feedPage = next;
+    loadFeed();
+}
+
+/* ========== 最新/最热切换 ========== */
+latestBtn.onclick = () => {
+    if (feedMode === 'latest') return;
+    feedMode = 'latest';
+    feedPage = 1;
+    latestBtn.classList.add("active");
+    hotBtn.classList.remove("active");
+    updateIndicator();
+    loadFeed();
+};
+
+hotBtn.onclick = () => {
+    if (feedMode === 'hot') return;
+    feedMode = 'hot';
+    feedPage = 1;
+    hotBtn.classList.add("active");
+    latestBtn.classList.remove("active");
+    updateIndicator();
+    loadFeed();
+};
+
+/* ========== 指示条 ====== */
+function updateIndicator() {
+    const active = feedMode === 'latest' ? latestBtn : hotBtn;
+    indicator.style.width = active.offsetWidth + "px";
+    indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+}
+
+/* ========== 搜索 ====== */
+function searchFiles() {
+    currentKeyword = document.getElementById("searchInput").value.trim();
+    currentType = document.getElementById("typeSelect").value;
+    feedPage = 1;
+    loadFeed();
+}
+searchInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.keyCode === 13) {
+        searchFiles();
+    }
+});
+
+/* ========== 初始化 ====== */
+updateIndicator();
+loadFeed();
+</script>
+
+</body>
+</html>
